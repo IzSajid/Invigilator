@@ -1,11 +1,11 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { MenuIcon, BellIcon, XCircleIcon } from '@heroicons/react/outline'
 import { NavLink } from 'react-router-dom'
 
 const navigation = [
     { name: 'Home', href: '/welcome' },
-    { name: 'Donno', href: '/not' },
+    { name: 'Dashboard', href: '/dashboard' },
     { name: 'Not set', href: '/customers' },
     { name: 'Not set', href: '/dictionary' },
 ]
@@ -28,9 +28,9 @@ export default function Header(props) {
                                         <span className="absolute -inset-0.5" />
                                         <span className="sr-only">Open main menu</span>
                                         {open ? (
-                                            <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                                            <XCircleIcon className="block h-6 w-6" aria-hidden="true" />
                                         ) : (
-                                            <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                                            <MenuIcon className="block h-6 w-6" aria-hidden="true" />
                                         )}
                                     </Disclosure.Button>
                                 </div>
@@ -100,7 +100,7 @@ export default function Header(props) {
                 )}
             </Disclosure>
             <div>
-                <div className='max-w-7xl mx-auto  min-h-screen'>
+                <div className=' bg-slate-300'>
                     {props.children}
                 </div>
             </div>
