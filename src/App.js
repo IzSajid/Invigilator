@@ -3,8 +3,9 @@ import React from 'react';
 import Header from './compotents/Header';
 import Welcome from './pages/welcome';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Signup from './pages/signup';
 import Dashboard from './pages/dashboard';
+import Login from './pages/login';
+import Register from './pages/register';
 
 function App() {
   return (
@@ -12,7 +13,8 @@ function App() {
       <Header>
         <Routes>
           <Route path="/welcome" element={<Welcome />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />          
         </Routes>
       </Header>

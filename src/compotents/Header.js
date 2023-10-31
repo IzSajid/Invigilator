@@ -1,6 +1,5 @@
-import { Fragment } from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { MenuIcon, BellIcon, XCircleIcon } from '@heroicons/react/outline'
+import { Disclosure } from '@headlessui/react'
+import { MenuIcon, XCircleIcon } from '@heroicons/react/outline'
 import { NavLink } from 'react-router-dom'
 
 const navigation = [
@@ -10,9 +9,7 @@ const navigation = [
     { name: 'Not set', href: '/dictionary' },
 ]
 
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
+
 
 export default function Header(props) {
     return (
@@ -52,22 +49,17 @@ export default function Header(props) {
 
                                                 >
                                                     {item.name}
-                                                </NavLink>
+                                                </NavLink>                       
                                             ))}
-                                        </div>
+                                        </div> 
                                     </div>
                                 </div>
-                                <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                                    <button
-                                        type="button"
-                                        className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                                    >
-                                        <span className="absolute -inset-1.5" />
-                                        <span className="sr-only">View notifications</span>
-                                        <BellIcon className="h-6 w-6" aria-hidden="true" />
-                                    </button>
-
-
+                                <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">  
+                                        <NavLink 
+                                            to={'/login'}>
+                                            <button type="button" 
+                                            className="bg-transparent hover:bg-gray-700 text-gray-300 font-semibold hover:text-white py-2 px-4 border border-gray-300 hover:border-white rounded">  Login  </button>  
+                                        </NavLink>                          
                                 </div>
                             </div>
                         </div>
