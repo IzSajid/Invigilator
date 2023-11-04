@@ -10,12 +10,53 @@ export default function Dashboard() {
     const [joined, setJoined] = useState([]);
 
     function joinCohort(courseName, creatorName) {
-        console.log(courseName, creatorName);
+            const data = { name: courseName, industry: creatorName };
+            const url = baseUrl + 'api/joined/';
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Something went wrong');
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log(data.cohort);
+                    //make sure the list is updated appropriately
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
     }
 
     function createCohort(courseName) {
-        console.log(courseName);
+        const data = { name: courseName };
+        const url = baseUrl + 'api/cohorts/';
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Something went wrong');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data.cohort);
+                setCohorts([...cohorts, data.cohort]);
+                //make sure the list is updated appropriately
+            })
+            .catch((e) => {
+                console.log(e);
+            });
     }
+
     useEffect(() => {
         const url = baseUrl + 'api/cohorts/';
         fetch(url)
