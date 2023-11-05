@@ -92,7 +92,7 @@ export default function Header(props) {
                 )}
             </Disclosure>
             <div>
-                <div className=' bg-slate-300'>
+                <div>
                     {props.children}
                 </div>
             </div>

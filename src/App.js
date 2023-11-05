@@ -6,7 +6,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/dashboard';
 import Login from './pages/login';
 import Register from './pages/register';
-import Cohort from './compotents/cohort';
+import Cohort from './pages/cohort';
+import People from './pages/people';
 
 function App() {
   return (
@@ -17,7 +18,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path='/dashboard/:id' element={<Cohort />} />'          
+          <Route path='/cohort/:id' element={<Cohort />} />
+          <Route path='/people/:id' element={<People/>} />          
         </Routes>
       </Header>
     </BrowserRouter>

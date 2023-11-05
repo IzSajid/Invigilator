@@ -1,6 +1,6 @@
 import '../index.css';
 import React, { useEffect,useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import JoinCohort from '../compotents/JoinCohort';
 import CreateCohort from '../compotents/CreateChohort';
 import { baseUrl } from '../share';
@@ -68,6 +68,14 @@ export default function Dashboard() {
             .then((data) => {
                 console.log(data);
                 setCohorts(data.cohorts);
+            })
+            .catch((error) => {
+                if (error.response.status === 403) {
+                    console.log('Access denied');
+                    // Handle the 403 response here
+                } else {
+                    console.log('Something went wrong');
+                }
             });
     }, []);
     useEffect(() => {
@@ -86,7 +94,7 @@ export default function Dashboard() {
 
 
     return (
-        <div className="flex flex-col h-screen bg-gray-100">
+        <div className="flex flex-col h-screen">
             <div className="flex justify-center mt-8">
                 <JoinCohort joinCohort={joinCohort} />,
                 <CreateCohort createCohort={createCohort} />
@@ -100,7 +108,7 @@ export default function Dashboard() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {cohorts.map((cohort) => (
                                 <div className="bg-white rounded-lg shadow-lg p-4" key={cohort.id}>
-                                    <Link to={`/dashboard/${cohort.id}`}>
+                                    <Link to={`/cohort/${cohort.id}`}>
                                         <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
                                             {cohort.cohort_name}
                                         </button>
@@ -120,7 +128,7 @@ export default function Dashboard() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {joined.map((joined) => (
                                 <div className="bg-white rounded-lg shadow-lg p-4" key={joined.id}>
-                                    <Link to={`/`}>
+                                    <Link to={`/cohort/${joined.cohort.cohort_id}`}>
                                         <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
                                              <p> {joined.cohort.cohort_name} </p>
                                         </button>
