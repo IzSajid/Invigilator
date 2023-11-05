@@ -9,11 +9,14 @@ export default function Dashboard() {
     const [cohorts, setCohorts] = useState([]);
     const [joined, setJoined] = useState([]);
 
-    function joinCohort(courseName, creatorName) {
-            const data = { name: courseName, industry: creatorName };
+    function joinCohort(cohortID) {
+            const data = { cohort: cohortID, user: 5 };
             const url = baseUrl + 'api/joined/';
             fetch(url, {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify(data),
             })
                 .then((response) => {
@@ -24,6 +27,7 @@ export default function Dashboard() {
                 })
                 .then((data) => {
                     console.log(data.cohort);
+                    setJoined([...joined, data.cohort]);
                     //make sure the list is updated appropriately
                 })
                 .catch((e) => {
@@ -32,7 +36,7 @@ export default function Dashboard() {
     }
 
     function createCohort(courseName) {
-        const data = { name: courseName };
+        const data = { cohort_name: courseName ,cohort_creator: 1};
         const url = baseUrl + 'api/cohorts/';
         fetch(url, {
             method: 'POST',
@@ -72,7 +76,7 @@ export default function Dashboard() {
             .then((res) => res.json())
             .then((data) => {
                 console.log(data);
-                setJoined(data.joined_cohorts);
+                setJoined(data.Joined_cohorts);
             });
     }, []);
 
@@ -96,7 +100,7 @@ export default function Dashboard() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {cohorts.map((cohort) => (
                                 <div className="bg-white rounded-lg shadow-lg p-4" key={cohort.id}>
-                                    <Link to={`/${cohort.id}`}>
+                                    <Link to={`/dashboard/${cohort.id}`}>
                                         <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
                                             {cohort.cohort_name}
                                         </button>
@@ -116,7 +120,7 @@ export default function Dashboard() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {joined.map((joined) => (
                                 <div className="bg-white rounded-lg shadow-lg p-4" key={joined.id}>
-                                    <Link to={`/${joined.id}`}>
+                                    <Link to={`/`}>
                                         <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
                                              <p> {joined.cohort.cohort_name} </p>
                                         </button>
