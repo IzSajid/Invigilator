@@ -50,16 +50,17 @@ export default function Header(props) {
                                                 >
                                                     {item.name}
                                                 </NavLink>                       
-                                            ))}
+                                            ))}      
                                         </div> 
                                     </div>
                                 </div>
                                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">  
-                                        <NavLink 
-                                            to={'/login'}>
-                                            <button type="button" 
-                                            className="bg-transparent hover:bg-gray-700 text-gray-300 font-semibold hover:text-white py-2 px-4 border border-gray-300 hover:border-white rounded">  Login  </button>  
-                                        </NavLink>                          
+                                    <NavLink to={'/login'}>
+                                        <button type="button" 
+                                        className="bg-transparent hover:bg-gray-700 text-gray-300 font-semibold
+                                            hover:text-white py-2 px-4 border border-gray-300 hover:border-white rounded">  
+                                        Login  </button>  
+                                    </NavLink>                            
                                 </div>
                             </div>
                         </div>

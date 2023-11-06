@@ -1,6 +1,6 @@
 import '../index.css';
 import React, { useEffect,useState } from 'react';
-import { Link} from 'react-router-dom';
+import { Link,useNavigate} from 'react-router-dom';
 import JoinCohort from '../compotents/JoinCohort';
 import CreateCohort from '../compotents/CreateChohort';
 import { baseUrl } from '../share';
@@ -8,6 +8,8 @@ import { baseUrl } from '../share';
 export default function Dashboard() {
     const [cohorts, setCohorts] = useState([]);
     const [joined, setJoined] = useState([]);
+
+    const navigate = useNavigate();
 
     function joinCohort(cohortID) {
             const data = { cohort: cohortID, user: 5 };
@@ -64,27 +66,28 @@ export default function Dashboard() {
     useEffect(() => {
         const url = baseUrl + 'api/cohorts/';
         fetch(url)
-            .then((res) => res.json())
+            .then((res) => {
+                if(res.status === 401){
+                    navigate('/login');
+                }
+                res.json()
+            })
             .then((data) => {
                 console.log(data);
-                setCohorts(data.cohorts);
-            })
-            .catch((error) => {
-                if (error.response.status === 403) {
-                    console.log('Access denied');
-                    // Handle the 403 response here
-                } else {
-                    console.log('Something went wrong');
+                if(data && data.cohorts){
+                    setCohorts(data.cohorts);
                 }
-            });
-    }, []);
+            })
+    }, [navigate]);
     useEffect(() => {
         const url = baseUrl + 'api/joined/';
         fetch(url)
             .then((res) => res.json())
             .then((data) => {
                 console.log(data);
-                setJoined(data.Joined_cohorts);
+                if(data && data.Joined_cohorts){
+                    setJoined(data.Joined_cohorts);
+                }
             });
     }, []);
 
@@ -101,7 +104,7 @@ export default function Dashboard() {
             </div>
             <div className="flex justify-center mt-8">
                 {cohorts.length === 0 ? (
-                    <p>Loading...</p> // You can replace this with a loading spinner if desired
+                    <p></p> // You can replace this with a loading spinner if desired
                 ) : (
                     <div className="flex flex-col items-center mt-8">
                         <h1 className="text-4xl font-bold text-gray-900 mb-4">Your Cohorts</h1>
@@ -110,7 +113,7 @@ export default function Dashboard() {
                                 <div className="bg-white rounded-lg shadow-lg p-4" key={cohort.id}>
                                     <Link to={`/cohort/${cohort.id}`}>
                                         <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                                            {cohort.cohort_name}
+                                            {cohort.cohort_name} - {cohort.id}
                                         </button>
                                     </Link>
                                 </div>
@@ -121,7 +124,7 @@ export default function Dashboard() {
             </div>
             <div className="flex justify-center mt-8">
                 {joined.length === 0 ? (
-                    <p>Loading...</p> 
+                    <p></p> 
                 ) : (
                     <div className="flex flex-col items-center mt-8">
                         <h1 className="text-4xl font-bold text-gray-900 mb-4">Joined Cohorts</h1>
@@ -130,7 +133,7 @@ export default function Dashboard() {
                                 <div className="bg-white rounded-lg shadow-lg p-4" key={joined.id}>
                                     <Link to={`/cohort/${joined.cohort.cohort_id}`}>
                                         <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                                             <p> {joined.cohort.cohort_name} </p>
+                                             <p> {joined.cohort.cohort_name} - {joined.cohort.cohort_id} </p>
                                         </button>
                                     </Link>
                                 </div>
