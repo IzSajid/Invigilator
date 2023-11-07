@@ -9,12 +9,13 @@ export default function Register() {
     const location = useLocation();
     const navigate = useNavigate();
 
-    
+
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(username);
         console.log(email);
         console.log(password);
+        
     }
 
     return (

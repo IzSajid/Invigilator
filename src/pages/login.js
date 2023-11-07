@@ -30,7 +30,9 @@ export default function Login() {
             return response.json();
         })
         .then((data) => {
-            console.log(data.access);
+            localStorage.setItem('access', data.access);
+            localStorage.setItem('refresh', data.refresh);
+            console.log(localStorage);
             navigate('/dashboard');
         })
     }

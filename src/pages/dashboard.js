@@ -65,12 +65,19 @@ export default function Dashboard() {
 
     useEffect(() => {
         const url = baseUrl + 'api/cohorts/';
-        fetch(url)
-            .then((res) => {
-                if(res.status === 401){
-                    navigate('/login');
+        fetch(url,
+            {
+                headers: {
+                    'content-type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('access')}`,
                 }
-                res.json()
+            }           
+            )
+            .then((res) => {
+            if(res.status === 401)
+                navigate('/login');
+            else
+                return res.json()
             })
             .then((data) => {
                 console.log(data);
@@ -78,11 +85,24 @@ export default function Dashboard() {
                     setCohorts(data.cohorts);
                 }
             })
-    }, [navigate]);
+    }, []);
+   
     useEffect(() => {
         const url = baseUrl + 'api/joined/';
-        fetch(url)
-            .then((res) => res.json())
+        fetch(url,
+            {
+                headers: {
+                    'content-type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('access')}`,
+                }
+            }
+            )
+            .then((res) => {
+              if(res.status === 401)
+                navigate('/login');
+              else
+                return res.json()
+            })
             .then((data) => {
                 console.log(data);
                 if(data && data.Joined_cohorts){
