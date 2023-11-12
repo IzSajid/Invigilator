@@ -12,7 +12,7 @@ export default function Login() {
     const login = (e) => {
         e.preventDefault();
         console.log(username);
-        const url = baseUrl + 'api/token/';
+        const url = baseUrl + 'api/login/';
         fetch(url,{
                 method: 'POST',
                 headers: {
@@ -32,8 +32,13 @@ export default function Login() {
         .then((data) => {
             localStorage.setItem('access', data.access);
             localStorage.setItem('refresh', data.refresh);
+            localStorage.setItem('user', data.user)
             console.log(localStorage);
-            navigate('/dashboard');
+            navigate(
+                location?.state?.previousUrl
+                    ? location.state.previousUrl
+                    : '/dashboard'
+            );
         })
     }
 

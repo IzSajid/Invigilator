@@ -1,5 +1,6 @@
 import { useState} from 'react';
 import { useLocation, useNavigate,Link } from 'react-router-dom';
+import { baseUrl } from '../share';
 
 export default function Register() {
     const [username, setUsername] = useState();
@@ -11,10 +12,33 @@ export default function Register() {
 
 
     const handleSubmit = (e) => {
+       
         e.preventDefault();
-        console.log(username);
-        console.log(email);
-        console.log(password);
+        const url = baseUrl + 'api/register/';
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: email,
+                username: username,
+                password: password,
+            }),
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                localStorage.setItem('access', data.access);
+                localStorage.setItem('refresh', data.refresh);
+                localStorage.setItem('user', data.user)
+                navigate(
+                    location?.state?.previousUrl
+                        ? location.state.previousUrl
+                        : '/dashboard'
+                );
+            });
         
     }
 

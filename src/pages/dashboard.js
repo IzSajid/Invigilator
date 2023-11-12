@@ -5,19 +5,25 @@ import JoinCohort from '../compotents/JoinCohort';
 import CreateCohort from '../compotents/CreateChohort';
 import { baseUrl } from '../share';
 
+
 export default function Dashboard() {
     const [cohorts, setCohorts] = useState([]);
     const [joined, setJoined] = useState([]);
+    
 
     const navigate = useNavigate();
 
+    const  userID = localStorage.getItem('user');
+
     function joinCohort(cohortID) {
-            const data = { cohort: cohortID, user: 5 };
+            
+            const data = { cohort: cohortID, user: userID };
             const url = baseUrl + 'api/joined/';
             fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('access')}`,
                 },
                 body: JSON.stringify(data),
             })
@@ -38,12 +44,13 @@ export default function Dashboard() {
     }
 
     function createCohort(courseName) {
-        const data = { cohort_name: courseName ,cohort_creator: 1};
+        const data = { cohort_name: courseName ,cohort_creator: userID};
         const url = baseUrl + 'api/cohorts/';
         fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('access')}`,
             },
             body: JSON.stringify(data),
         })
@@ -68,7 +75,7 @@ export default function Dashboard() {
         fetch(url,
             {
                 headers: {
-                    'content-type': 'application/json',
+                    'Content-type': 'application/json',
                     Authorization: `Bearer ${localStorage.getItem('access')}`,
                 }
             }           
@@ -85,14 +92,14 @@ export default function Dashboard() {
                     setCohorts(data.cohorts);
                 }
             })
-    }, []);
+    }, [navigate]);
    
     useEffect(() => {
         const url = baseUrl + 'api/joined/';
         fetch(url,
             {
                 headers: {
-                    'content-type': 'application/json',
+                    'Content-type': 'application/json',
                     Authorization: `Bearer ${localStorage.getItem('access')}`,
                 }
             }
@@ -109,10 +116,7 @@ export default function Dashboard() {
                     setJoined(data.Joined_cohorts);
                 }
             });
-    }, []);
-
-
-
+    }, [navigate]);
 
 
 
@@ -124,7 +128,7 @@ export default function Dashboard() {
             </div>
             <div className="flex justify-center mt-8">
                 {cohorts.length === 0 ? (
-                    <p></p> // You can replace this with a loading spinner if desired
+                    <p>Loading...</p> // You can replace this with a loading spinner if desired
                 ) : (
                     <div className="flex flex-col items-center mt-8">
                         <h1 className="text-4xl font-bold text-gray-900 mb-4">Your Cohorts</h1>
@@ -149,14 +153,16 @@ export default function Dashboard() {
                     <div className="flex flex-col items-center mt-8">
                         <h1 className="text-4xl font-bold text-gray-900 mb-4">Joined Cohorts</h1>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                            {joined.map((joined) => (
-                                <div className="bg-white rounded-lg shadow-lg p-4" key={joined.id}>
-                                    <Link to={`/cohort/${joined.cohort.cohort_id}`}>
-                                        <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                                             <p> {joined.cohort.cohort_name} - {joined.cohort.cohort_id} </p>
-                                        </button>
-                                    </Link>
-                                </div>
+                            {joined && joined.map((joined) => (
+                                joined.cohort ? (
+                                    <div className="bg-white rounded-lg shadow-lg p-4" key={joined.id}>
+                                        <Link to={`/cohort/${joined.cohort.cohort_id}`}>
+                                            <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+                                                <p> {joined.cohort.cohort_name} - {joined.cohort.cohort_id} </p>
+                                            </button>
+                                        </Link>
+                                    </div>
+                                ) : null
                             ))}
                         </div>
                     </div>
