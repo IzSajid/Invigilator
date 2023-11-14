@@ -9,6 +9,34 @@ export default function Login() {
     const location = useLocation();
     const navigate = useNavigate();
 
+
+    /*const refreshToken = () => {
+        const url = baseUrl + 'api/refresh/';
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                refresh: localStorage.getItem('refresh'),
+            }),
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Something went wrong');
+            }
+            return response.json();
+        })
+        .then((data) => {
+            localStorage.setItem('access', data.access);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    };*/
+
+
+
     const login = (e) => {
         e.preventDefault();
         console.log(username);

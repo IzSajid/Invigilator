@@ -8,6 +8,7 @@ import Login from './pages/login';
 import Register from './pages/register';
 import Cohort from './pages/cohort';
 import People from './pages/people';
+import Exam from './pages/exam';
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path='/cohort/:id' element={<Cohort />} />
-          <Route path='/people/:id' element={<People/>} />          
+          <Route path='/people/:id' element={<People/>} />  
+          <Route path='/exam/:id' element={<Exam/>} />        
         </Routes>
       </Header>
     </BrowserRouter>
