@@ -59,6 +59,49 @@ export default function Exam(props) {
     }, [id]);
 
 
+    function attendedExam() {
+        const urlAttended = baseUrl + 'api/exams/' + id + '/attended/';
+        fetch(urlAttended, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('access')}`,
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);  // Log the created Attended instance
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+    
+    function markExamAsAttended() {
+        const url = baseUrl + 'api/exams/'+ id+'/attended/';
+        fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                // Include your authentication headers, if any
+                Authorization: `Bearer ${localStorage.getItem('access')}`,
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);  // Log the updated Attended instance
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+
+
+
+
+
+
    
 
         const handleOptionChange = (questionId, selectedOption) => {
@@ -70,7 +113,7 @@ export default function Exam(props) {
 
         const handleSubmit = (event) => {
             event.preventDefault();
-        
+            attendedExam();
             const url = baseUrl + 'api/answer/mcq/';
         
             // Assuming the user ID is stored in local storage
@@ -107,6 +150,7 @@ export default function Exam(props) {
                     console.error('Error:', error);
                 });
             });
+            markExamAsAttended();
         };
 
 
