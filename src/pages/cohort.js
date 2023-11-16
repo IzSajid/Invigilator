@@ -7,6 +7,7 @@ export default function Cohort(props) {
     const { id } = useParams();
     const [cohort, setCohort] = useState(null);
     const [exams, setExams] = useState([]);
+    const [isCreator, setIsCreator] = useState(false);
 
     const navigate = useNavigate();
 
@@ -28,6 +29,8 @@ export default function Cohort(props) {
             })
             .then((data) => {
                 setCohort(data.cohort);
+                if (data.cohort.cohort_creator.user_id === parseInt(localStorage.getItem('user')))
+                    setIsCreator(true);
             })
             .catch((e) => {
                 console.log(e);
@@ -55,8 +58,29 @@ export default function Cohort(props) {
             })
     }, [id, navigate]);
 
-    function createExam(examName) {
-        console.log(examName);
+    function createExam(examName,examDuration) {
+        const url = baseUrl + 'api/exam/create/';
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('access')}`,
+            },
+            body: JSON.stringify({
+                exam_name: examName,
+                cohort: id,
+                duration: examDuration,
+            }),  
+        })
+            .then(response => {
+                response.json()})
+            .then(data => {
+                console.log('Success:', data);
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });   
     }
 
     return (
@@ -73,6 +97,9 @@ export default function Cohort(props) {
                     <div className="p-4">
                         <div className="flex justify-between items-center">
                             <h1 className="text-3xl font-bold text-gray-900">{cohort && cohort.cohort_name}</h1>
+                            {isCreator && (
+                                <p className="text-green-500">You are the creator of this cohort.</p>
+                            )}
                         </div>
                     </div>
                 </nav>
@@ -83,9 +110,14 @@ export default function Cohort(props) {
                         </div>
                     )}
                 </div>
+
+                {isCreator && (
                 <div className="flex justify-center mt-8">
                     <CreateExam createExam={createExam} />
-                </div>
+                </div>)}
+
+
+
                 <div className="flex justify-center mt-8">
                     {exams.length === 0 ? (
                         <p>Loading...</p> // You can replace this with a loading spinner if desired
@@ -106,3 +138,6 @@ export default function Cohort(props) {
         </div>
     );
 }
+
+
+

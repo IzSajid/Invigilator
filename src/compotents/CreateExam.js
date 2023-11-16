@@ -3,7 +3,8 @@ import Modal from 'react-bootstrap/Modal';
 
 export default function CreateExam(props) {
     const[exam,setExam]= useState('');
-
+    const [examHours, setExamHours] = useState('');
+    const [examMinutes, setExamMinutes] = useState('');
 
 
     const [show, setShow] = useState(false);
@@ -31,8 +32,12 @@ export default function CreateExam(props) {
                     onSubmit={(e) => {
                         e.preventDefault();
                         handleClose();
-                        setExam('');
-                        props.createExam(exam);
+                        setExam('<no name given>');
+                        setExamHours('00');
+                        setExamMinutes('00');
+                        const examDuration = examHours + ':' + examMinutes + ':00';
+                        props.createExam(exam, examDuration);
+                        console.log(exam, examDuration);
                     }}
 
                         id="editmodal" className="w-full max-w-sm">
@@ -49,6 +54,45 @@ export default function CreateExam(props) {
                                     value={exam}
                                     onChange={(e) => { setExam(e.target.value) }}
                                 />
+                            </div>
+                        </div>
+                        <div className="md:flex md:items-center mb-6">
+                            <div className="md:w-1/3">
+                                <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" htmlFor="examDuration">
+                                    Exam Duration
+                                </label>
+                            </div>
+                            <div className="md:w-2/3 flex items-center justify-between border border-gray-300 p-1 rounded">
+                                <div className="flex items-center">
+                                    <label className="text-gray-500 font-bold pr-4" htmlFor="hours">
+                                        HH:
+                                    </label>
+                                    <select
+                                        id="hours"
+                                        value={examHours}
+                                        onChange={(e) => { setExamHours(e.target.value) }}
+                                        className="w-2/3 p-2 border border-gray-300 rounded-l-md"
+                                    >
+                                        {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
+                                            <option key={hour} value={hour}>{hour}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="flex items-center">
+                                    <label className="text-gray-500 font-bold pr-4" htmlFor="minutes">
+                                        MM:
+                                    </label>
+                                    <select
+                                        id="minutes"
+                                        value={examMinutes}
+                                        onChange={(e) => { setExamMinutes(e.target.value) }}
+                                        className="w-2/3 p-2 border border-gray-300"
+                                    >
+                                        {Array.from({ length: 60 }, (_, i) => i).map((minute) => (
+                                            <option key={minute} value={minute}>{minute}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </form>

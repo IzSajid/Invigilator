@@ -1,17 +1,17 @@
 import { Disclosure } from '@headlessui/react'
 import { MenuIcon, XCircleIcon } from '@heroicons/react/outline'
 import { NavLink } from 'react-router-dom'
-
+import Logout from '../compotents/logout';
 const navigation = [
     { name: 'Home', href: '/welcome' },
     { name: 'Dashboard', href: '/dashboard' },
-    { name: 'Not set', href: '/customers' },
-    { name: 'Not set', href: '/dictionary' },
 ]
 
 
 
 export default function Header(props) {
+    
+
     return (
         <>
             <Disclosure as="nav" className="bg-gray-800">
@@ -61,12 +61,12 @@ export default function Header(props) {
                                             hover:text-white py-2 px-4 border border-gray-300 hover:border-white rounded">  
                                         Login  </button>  
                                     </NavLink>   
-                                    <NavLink className="mx-2" to={'/logout'}>
-                                        <button type="button" 
+                                    <div className="mx-2">
+                                        <button type="button"  onClick={Logout}
                                         className="bg-transparent hover:bg-gray-700 text-gray-300 font-semibold
                                             hover:text-white py-2 px-4 border border-gray-300 hover:border-white rounded">  
                                         Logout  </button>  
-                                    </NavLink>                           
+                                    </div>                           
                                 </div>
                             </div>
                         </div>

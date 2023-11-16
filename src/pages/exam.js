@@ -9,8 +9,37 @@ export default function Exam(props) {
     const [selectedOptions, setSelectedOptions] = useState({});
     const [message, setMessage] = useState('');
     const [score, setScore] = useState(null);
+    const [isCreator, setIsCreator] = useState(false);
     const { id } = useParams();
 
+    //isCreator Check
+    useEffect(() => {
+        const url = baseUrl + 'api/cohorts/'+ id +'/';
+        fetch(url,
+                {
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('access')}`,
+                    }
+                }
+            )
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Something went wrong');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                if (data.cohort.cohort_creator.user_id === parseInt(localStorage.getItem('user')))
+                    setIsCreator(true);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    }, [id]);
+    //isCreator Check End
+
+    //Exam info Fetch
     useEffect(() => {
         const url = baseUrl + 'api/exams/'+ id +'/';
         fetch(url,{
@@ -33,7 +62,9 @@ export default function Exam(props) {
                 console.log(e);
             });
     }, [id])
-    
+    //Exam info Fetch End
+
+    //Questions for exam Fetch
     useEffect(() => {
         const url = baseUrl + 'api/exam/'+ id+'/questions/';
         fetch(url,{
@@ -56,6 +87,7 @@ export default function Exam(props) {
                 console.log(e);
             });
     }, [id]);
+    //Questions for exam Fetch End
 
 
     function attendedExam() {
@@ -157,6 +189,25 @@ export default function Exam(props) {
             });
         };
 
+        const handleDelete = (questionId) => {
+            const url = baseUrl + 'api/exam/questions/' + questionId + '/';
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('access')}`,
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    window.location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
 
     return (
         <div className="container mx-auto px-4">
@@ -168,6 +219,14 @@ export default function Exam(props) {
                 <ul className="space-y-4">
                     {questions.map((question) => (
                         <li key={question.id} className="border p-4 rounded-md">
+                            {isCreator &&
+                            <div className="flex justify-end">
+                                <button
+                                    className="bg-red-500 text-white px-2 py-1 rounded"
+                                >
+                                    Delete
+                                </button>
+                            </div>}
                             <h3 className="text-lg font-semibold mb-2">{question.question}</h3>
                             <div className="flex flex-row space-x-4 space-y-2">
                                 {['option1', 'option2', 'option3', 'option4'].map(option => (

@@ -8,7 +8,14 @@ export default function People() {
 
     useEffect(() => {
         const url = baseUrl + 'api/cohorts/'+ id +'/users/';
-        fetch(url)
+        fetch(url,
+            {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('access')}`,
+                }
+            }
+            )
             .then(response => response.json())
             .then(data => setData(data))
             .catch(error => console.error('Error:', error));
