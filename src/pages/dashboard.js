@@ -34,7 +34,6 @@ export default function Dashboard() {
                     return response.json();
                 })
                 .then((data) => {
-                    console.log(data.cohort);
                     setJoined([...joined, data.cohort]);
                     //make sure the list is updated appropriately
                 })
@@ -61,7 +60,6 @@ export default function Dashboard() {
                 return response.json();
             })
             .then((data) => {
-                console.log(data.cohort);
                 setCohorts([...cohorts, data.cohort]);
                 //make sure the list is updated appropriately
             })
@@ -87,7 +85,6 @@ export default function Dashboard() {
                 return res.json()
             })
             .then((data) => {
-                console.log(data);
                 if(data && data.cohorts){
                     setCohorts(data.cohorts);
                 }
@@ -111,7 +108,6 @@ export default function Dashboard() {
                 return res.json()
             })
             .then((data) => {
-                console.log(data);
                 if(data && data.Joined_cohorts){
                     setJoined(data.Joined_cohorts);
                 }

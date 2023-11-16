@@ -12,7 +12,6 @@ export default function Login() {
 
     const login = (e) => {
         e.preventDefault();
-        console.log(username);
         const url = baseUrl + 'api/login/';
         fetch(url,{
                 method: 'POST',
@@ -34,7 +33,6 @@ export default function Login() {
             localStorage.setItem('access', data.access);
             localStorage.setItem('refresh', data.refresh);
             localStorage.setItem('user', data.user)
-            console.log(localStorage);
             navigate(
                 location?.state?.previousUrl
                     ? location.state.previousUrl

@@ -12,7 +12,14 @@ export default function Cohort(props) {
 
     useEffect(() => {
         const url = baseUrl + 'api/cohorts/'+ id +'/';
-        fetch(url)
+        fetch(url,
+                {
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('access')}`,
+                    }
+                }
+            )
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Something went wrong');
@@ -44,7 +51,6 @@ export default function Cohort(props) {
                 return res.json()
             })
             .then((data) => {
-                console.log(data);
                 setExams(data);
             })
     }, [id, navigate]);

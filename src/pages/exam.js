@@ -7,7 +7,8 @@ export default function Exam(props) {
     const [exam, setExam] = useState(null);
     const [questions, setQuestions] = useState([]);
     const [selectedOptions, setSelectedOptions] = useState({});
-
+    const [message, setMessage] = useState('');
+    const [score, setScore] = useState(null);
     const { id } = useParams();
 
     useEffect(() => {
@@ -27,7 +28,6 @@ export default function Exam(props) {
             })
             .then((data) => {
                 setExam(data);
-                console.log(data);
             })
             .catch((e) => {
                 console.log(e);
@@ -51,7 +51,6 @@ export default function Exam(props) {
             })
             .then((data) => {
                 setQuestions(data);
-                console.log(data);
             })
             .catch((e) => {
                 console.log(e);
@@ -61,23 +60,37 @@ export default function Exam(props) {
 
     function attendedExam() {
         const urlAttended = baseUrl + 'api/exams/' + id + '/attended/';
+        const userID = localStorage.getItem('user');
         fetch(urlAttended, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${localStorage.getItem('access')}`,
             },
+            body: JSON.stringify({
+                exam: id,
+                user: userID,
+            })
         })
-            .then(response => response.json())
+            .then(response => {
+                //All errors
+                if (!response.ok) {
+                    if (response.status === 400) {
+                        setMessage('You have already attended this exam.');
+                    } else {
+                        throw new Error('Something went wrong');
+                    }
+                }
+                response.json()
+            })
             .then(data => {
-                console.log(data);  // Log the created Attended instance
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
     }
     
-    function markExamAsAttended() {
+    function markExam() {
         const url = baseUrl + 'api/exams/'+ id+'/attended/';
         fetch(url, {
             method: 'PATCH',
@@ -89,7 +102,8 @@ export default function Exam(props) {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);  // Log the updated Attended instance
+                console.log(data.score);  // Log the updated Attended instance
+                setScore(data.score);
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -113,44 +127,34 @@ export default function Exam(props) {
 
         const handleSubmit = (event) => {
             event.preventDefault();
-            attendedExam();
+            
             const url = baseUrl + 'api/answer/mcq/';
-        
-            // Assuming the user ID is stored in local storage
             const userId = localStorage.getItem('user');
-        
-            // Convert selectedOptions to an array of answers
             const answers = Object.entries(selectedOptions).map(([mcq, selected_option]) => ({
                 mcq,
                 user: userId,
                 selected_option,
             }));
         
-            // Send each answer to the server
-            answers.forEach((answer) => {
-                fetch(url, {
+            // Create an array to hold the fetch Promises
+            const fetchPromises = answers.map((answer) => {
+                return fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        // Include the access token in the Authorization header if needed
                         'Authorization': `Bearer ${localStorage.getItem('access')}`,
                     },
                     body: JSON.stringify(answer),
-                })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error('Something went wrong');
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    console.log('Answer submitted:', data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
                 });
             });
-            markExamAsAttended();
+        
+            // Add the attendedExam fetch Promise to the array
+            fetchPromises.push(attendedExam());
+        
+            // Wait for all the fetch Promises to resolve before calling markExam
+            Promise.all(fetchPromises).then(() => {
+                markExam();
+            });
         };
 
 
@@ -189,6 +193,11 @@ export default function Exam(props) {
                     Submit
                 </button>
             </form>
+            {message && <p className="text-red-500">{message}</p>}
+            {score &&
+            <div className="mx-auto bg-green-300 text-white font-bold rounded w-1/2">
+                <p className="text-lg text-center py-4">Your Score is: {score}</p>
+            </div>}
         </div>
     )
 }
