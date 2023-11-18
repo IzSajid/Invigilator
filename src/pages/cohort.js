@@ -127,7 +127,7 @@ export default function Cohort(props) {
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                 {exams.map((exam) => (
                                     <div className="bg-white rounded-lg shadow-lg p-4" key={exam.id}>
-                                       <Link to={`/exam/${exam.id}`}> <p>{exam.exam_name}</p></Link>
+                                    <Link to={`/cohort/${id}/exam/${exam.id}`}> <p>{exam.exam_name}</p></Link>
                                     </div>
                                 ))}
                             </div>

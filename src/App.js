@@ -23,7 +23,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path='/cohort/:id' element={<Cohort />} />
           <Route path='/people/:id' element={<People/>} />  
-          <Route path='/exam/:id' element={<Exam/>} />        
+          <Route path='/cohort/:cohortId/exam/:examId' element={<Exam/>} />        
         </Routes>
       </Header>
     </BrowserRouter>

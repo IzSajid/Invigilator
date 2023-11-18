@@ -1,8 +1,11 @@
 import { useEffect,useState } from "react";
 import { useParams } from "react-router-dom"
 import { baseUrl } from "../share"; 
+import CreateQuestion from "../compotents/CreateQuestion";
 
 export default function Exam(props) {
+
+    const { cohortId, examId } = useParams();
 
     const [exam, setExam] = useState(null);
     const [questions, setQuestions] = useState([]);
@@ -10,11 +13,10 @@ export default function Exam(props) {
     const [message, setMessage] = useState('');
     const [score, setScore] = useState(null);
     const [isCreator, setIsCreator] = useState(false);
-    const { id } = useParams();
 
     //isCreator Check
     useEffect(() => {
-        const url = baseUrl + 'api/cohorts/'+ id +'/';
+        const url = baseUrl + 'api/cohorts/'+ cohortId +'/';
         fetch(url,
                 {
                     headers: {
@@ -36,12 +38,12 @@ export default function Exam(props) {
             .catch((e) => {
                 console.log(e);
             });
-    }, [id]);
+    }, [cohortId]);
     //isCreator Check End
 
     //Exam info Fetch
     useEffect(() => {
-        const url = baseUrl + 'api/exams/'+ id +'/';
+        const url = baseUrl + 'api/exams/'+ examId +'/';
         fetch(url,{
             method: 'GET',
             headers: {
@@ -61,12 +63,12 @@ export default function Exam(props) {
             .catch((e) => {
                 console.log(e);
             });
-    }, [id])
+    }, [examId])
     //Exam info Fetch End
 
     //Questions for exam Fetch
     useEffect(() => {
-        const url = baseUrl + 'api/exam/'+ id+'/questions/';
+        const url = baseUrl + 'api/exam/'+ examId+'/questions/';
         fetch(url,{
             method: 'GET',
             headers: {
@@ -86,12 +88,12 @@ export default function Exam(props) {
             .catch((e) => {
                 console.log(e);
             });
-    }, [id]);
+    }, [examId]);
     //Questions for exam Fetch End
 
 
     function attendedExam() {
-        const urlAttended = baseUrl + 'api/exams/' + id + '/attended/';
+        const urlAttended = baseUrl + 'api/exams/' + examId + '/attended/';
         const userID = localStorage.getItem('user');
         fetch(urlAttended, {
             method: 'POST',
@@ -100,7 +102,7 @@ export default function Exam(props) {
                 Authorization: `Bearer ${localStorage.getItem('access')}`,
             },
             body: JSON.stringify({
-                exam: id,
+                exam: examId,
                 user: userID,
             })
         })
@@ -123,7 +125,7 @@ export default function Exam(props) {
     }
     
     function markExam() {
-        const url = baseUrl + 'api/exams/'+ id+'/attended/';
+        const url = baseUrl + 'api/exams/'+ examId+'/attended/';
         fetch(url, {
             method: 'PATCH',
             headers: {
@@ -143,76 +145,82 @@ export default function Exam(props) {
     }
 
 
+    const handleOptionChange = (questionId, selectedOption) => {
+        setSelectedOptions(prevOptions => ({
+            ...prevOptions,
+            [questionId]: selectedOption
+        }));
+    };
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
 
+        const url = baseUrl + 'api/answer/mcq/';
+        const userId = localStorage.getItem('user');
+        const answers = Object.entries(selectedOptions).map(([mcq, selected_option]) => ({
+            mcq,
+            user: userId,
+            selected_option,
+        }));
 
-
-
-   
-
-        const handleOptionChange = (questionId, selectedOption) => {
-            setSelectedOptions(prevOptions => ({
-                ...prevOptions,
-                [questionId]: selectedOption
-            }));
-        };
-
-        const handleSubmit = (event) => {
-            event.preventDefault();
-            
-            const url = baseUrl + 'api/answer/mcq/';
-            const userId = localStorage.getItem('user');
-            const answers = Object.entries(selectedOptions).map(([mcq, selected_option]) => ({
-                mcq,
-                user: userId,
-                selected_option,
-            }));
-        
-            // Create an array to hold the fetch Promises
-            const fetchPromises = answers.map((answer) => {
-                return fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('access')}`,
-                    },
-                    body: JSON.stringify(answer),
-                });
-            });
-        
-            // Add the attendedExam fetch Promise to the array
-            fetchPromises.push(attendedExam());
-        
-            // Wait for all the fetch Promises to resolve before calling markExam
-            Promise.all(fetchPromises).then(() => {
-                markExam();
-            });
-        };
-
-        const handleDelete = (questionId) => {
-            const url = baseUrl + 'api/exam/questions/' + questionId + '/';
-            fetch(url, {
-                method: 'DELETE',
+        // Create an array to hold the fetch Promises
+        const fetchPromises = answers.map((answer) => {
+            return fetch(url, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('access')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('access')}`,
                 },
+                body: JSON.stringify(answer),
+            });
+        });
+
+        // Add the attendedExam fetch Promise to the array
+        fetchPromises.push(attendedExam());
+
+        // Wait for all the fetch Promises to resolve before calling markExam
+        Promise.all(fetchPromises).then(() => {
+            markExam();
+        });
+    };
+
+    const addQuestion = (question, option1, option2, option3, option4, answer, marks) => {
+        console.log("called");
+    }
+
+    const handleDelete = (questionId) => {
+        const url = baseUrl + 'api/questions/' + questionId + '/';
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('access')}`,
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error deleting question: ${response.statusText}`);
+                }
+                // Only try to parse the response as JSON if there's content
+                return response.status === 204 ? null : response.json();
             })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    window.location.reload();
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-        }
+            .then(data => {
+                console.log(data);
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.error('Error deleting question:', error);
+            });
+    }
 
 
     return (
         <div className="container mx-auto px-4">
             <h1 className="text-4xl font-bold mb-4">Exam</h1>
             <h2 className="text-2xl mb-2">{exam?.exam_name}</h2>
+            {isCreator &&
+                <CreateQuestion addQuestion={addQuestion} />
+            }
             <form
                 onSubmit={handleSubmit}
             >   
@@ -223,6 +231,7 @@ export default function Exam(props) {
                             <div className="flex justify-end">
                                 <button
                                     className="bg-red-500 text-white px-2 py-1 rounded"
+                                    onClick={() => handleDelete(question.id)}
                                 >
                                     Delete
                                 </button>
