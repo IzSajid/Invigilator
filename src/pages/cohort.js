@@ -89,6 +89,7 @@ export default function Cohort(props) {
                 <div className="p-4">
                     <div className="flex justify-between items-center">
                         <Link to={'/people/' + id} className="text-gray-900 font-bold text-xl">People</Link>
+                        <Link to={'/cohort/' + id + '/delete'} className="text-red-500 hover:text-red-600">Delete</Link>
                     </div>
                 </div>
             </div>

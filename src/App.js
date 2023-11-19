@@ -9,7 +9,8 @@ import Register from './pages/register';
 import Cohort from './pages/cohort';
 import People from './pages/people';
 import Exam from './pages/exam';
-
+import DeleteCohortPage from './pages/deleteCohort';
+import DeleteExamPage from './pages/deleteExam';
 
 function App() {
   return (
@@ -23,7 +24,9 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path='/cohort/:id' element={<Cohort />} />
           <Route path='/people/:id' element={<People/>} />  
-          <Route path='/cohort/:cohortId/exam/:examId' element={<Exam/>} />        
+          <Route path='/cohort/:id/delete' element={<DeleteCohortPage/>} />
+          <Route path='/cohort/:cohortId/exam/:examId' element={<Exam/>} />  
+          <Route path='/cohort/:cohortId/exam/:examId/delete' element={<DeleteExamPage/>} />     
         </Routes>
       </Header>
     </BrowserRouter>

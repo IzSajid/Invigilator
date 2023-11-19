@@ -9,8 +9,7 @@ export default function CreateQuestion(props) {
     const[option4,setOption4]= useState('');
     const[answer,setAnswer]= useState('');
     const[marks,setMarks]= useState(1);
-    const [selectedOptionValue, setSelectedOptionValue] = useState('one');
-
+    const[selectedElement,setSelectedElement]= useState('default');
 
     const [show, setShow] = useState(false);
 
@@ -43,7 +42,7 @@ export default function CreateQuestion(props) {
                         setOption2('');
                         setOption3('');
                         setOption4('');
-                        setAnswer('');
+                        setAnswer('default');
                         setMarks(1);
                         props.addQuestion(question,option1,option2,option3,option4,answer,marks);
                         console.log(question,option1,option2,option3,option4,answer,marks);
@@ -125,29 +124,40 @@ export default function CreateQuestion(props) {
                                 />
                             </div>
                         </div>
-                        <div className="md:w-2/3">
-                            <select
-                                className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white"
-                                id="answer"
-                                type="text"
-                                value={selectedOptionValue} // Use selectedOptionValue instead of answer
-                                onChange={(e) => {
-                                    const selectedOption = e.target.options[e.target.selectedIndex];
-                                    const optionValues = {
-                                        one: option1,
-                                        two: option2,
-                                        three: option3,
-                                        four: option4,
-                                    };
-                                    setAnswer(optionValues[selectedOption.value]);
-                                    setSelectedOptionValue(selectedOption.value); // Update selectedOptionValue
-                                }}
-                            >
-                                <option value="one">Option 1</option>
-                                <option value="two">Option 2</option>
-                                <option value="three">Option 3</option>
-                                <option value="four">Option 4</option>
-                            </select>
+                        <div className="md:flex md:items-center mb-6">
+                            <div className="md:w-1/3">
+                                <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" 
+                                htmlFor="answer">
+                                    Answer
+                                </label>
+                            </div>
+
+                            <div className="md:w-2/3">
+                                <select
+                                    className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white"
+                                    id="answer"
+                                    type="text"
+                                    value={answer}
+
+                                    onChange={(e) => {
+                                        const selectedOption = e.target.options[e.target.selectedIndex];
+                                        const optionValues = {
+                                            one: option1,
+                                            two: option2,
+                                            three: option3,
+                                            four: option4,
+                                        };
+                                        setAnswer(optionValues[selectedOption.value]);
+                                        setSelectedElement(selectedOption.value);
+                                    }}
+                                >
+                                    <option value="">Select an answer</option>
+                                    <option value="one">Option 1</option>
+                                    <option value="two">Option 2</option>
+                                    <option value="three">Option 3</option>
+                                    <option value="four">Option 4</option>
+                                </select>
+                            </div>
                         </div>    
                         <div className="md:flex md:items-center mb-6">
                             <div className="md:w-1/3">

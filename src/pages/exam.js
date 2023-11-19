@@ -1,12 +1,12 @@
 import { useEffect,useState } from "react";
-import { useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { baseUrl } from "../share"; 
 import CreateQuestion from "../compotents/CreateQuestion";
 
 export default function Exam(props) {
 
     const { cohortId, examId } = useParams();
-
+    const navigate = useNavigate();
     const [exam, setExam] = useState(null);
     const [questions, setQuestions] = useState([]);
     const [selectedOptions, setSelectedOptions] = useState({});
@@ -185,7 +185,37 @@ export default function Exam(props) {
     };
 
     const addQuestion = (question, option1, option2, option3, option4, answer, marks) => {
-        console.log("called");
+       const url = baseUrl + 'api/exam/'+examId+'/questions/';
+       fetch(url, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('access')}`,
+              },
+              body: JSON.stringify({
+                exam: examId,
+                question: question,
+                option1: option1,
+                option2: option2,
+                option3: option3,
+                option4: option4,
+                answer: answer,
+                marks: marks,
+              }),
+         })
+              .then(response => {
+                if (!response.ok) {
+                     throw new Error('Something went wrong');
+                }
+                return response.json();
+              })
+              .then(data => {
+                setQuestions([...questions, data]);
+                window.location.reload();
+              })
+              .catch((e) => {
+                console.log(e);
+              });
     }
 
     const handleDelete = (questionId) => {
@@ -219,7 +249,17 @@ export default function Exam(props) {
             <h1 className="text-4xl font-bold mb-4">Exam</h1>
             <h2 className="text-2xl mb-2">{exam?.exam_name}</h2>
             {isCreator &&
+            <>
                 <CreateQuestion addQuestion={addQuestion} />
+                <div className="flex justify-end">
+                    <button onClick={() => navigate('/cohort/'+cohortId+'/exam/'+examId+'/delete')}
+                        className="bg-red-700 text-white mb-2 px-2 py-1 rounded"        
+                    >
+                        Delete Exam
+                    </button>
+                   
+                </div>
+            </>
             }
             <form
                 onSubmit={handleSubmit}
